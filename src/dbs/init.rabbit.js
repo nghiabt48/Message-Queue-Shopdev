@@ -23,4 +23,15 @@ const connectToRabbitMQ_ForTest = async() => {
     console.error(error)
   }
 }
-module.exports = {connectToRabbitMQ, connectToRabbitMQ_ForTest}
+const consumerQueue = async(channel, queueName) => {
+  try {
+    await channel.consume(queueName, msg => {
+      console.log(`Received message: ${msg.content.toString()}`)
+    }, {
+      noAck: true
+    })
+  } catch (error) {
+    throw new Error("Attempted to consume message failed: " + error)
+  }
+}
+module.exports = {connectToRabbitMQ, connectToRabbitMQ_ForTest, consumerQueue}
